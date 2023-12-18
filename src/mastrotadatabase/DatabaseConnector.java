@@ -5,6 +5,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 public class DatabaseConnector implements AutoCloseable {
     private Connection connection;
@@ -28,6 +32,12 @@ public class DatabaseConnector implements AutoCloseable {
 
     public Connection getConnection() {
         return this.connection;
+    }
+    
+    
+    public java.util.Date parseFecha(String fechaStr) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        return formatter.parse(fechaStr);
     }
     
     private boolean existeTabla(Statement stmt, String nombreTabla) throws SQLException{
@@ -71,7 +81,7 @@ public class DatabaseConnector implements AutoCloseable {
      */
     public void crearTablasSiNoExisten() {
     try (Statement stmt = connection.createStatement()) {
-        crearTabla(stmt, "EMPLEADO", "CREATE TABLE empleado(n_empleado NUMBER GENERATED ALWAYS AS IDENTITY, DNI VARCHAR2(20), telefono VARCHAR2(15), direccion VARCHAR2(255), fecha_contratacion DATE, departamento VARCHAR2(255), PRIMARY KEY(n_empleado))");
+        crearTabla(stmt, "EMPLEADO", "CREATE TABLE empleado(n_empleado NUMBER GENERATED ALWAYS AS IDENTITY, nombre VARCHAR(50), apellidos VARCHAR(60), DNI VARCHAR2(20), telefono VARCHAR2(15), direccion VARCHAR2(255), fecha_contratacion DATE, departamento VARCHAR2(255), PRIMARY KEY(n_empleado))");
         crearTabla(stmt, "CONTRATO", "CREATE TABLE contrato(n_contrato NUMBER GENERATED ALWAYS AS IDENTITY, departamento VARCHAR2(255), fecha_inicio DATE, duracion INT, estado VARCHAR2(8) CHECK(estado IN('activo','inactivo')), n_empleado NUMBER, PRIMARY KEY(n_contrato), FOREIGN KEY(n_empleado) REFERENCES empleado(n_empleado) ON DELETE SET NULL)");
         crearTabla(stmt, "SUPPLIER", "CREATE TABLE supplier(CIF_supp VARCHAR2(20), denomination VARCHAR2(255), address VARCHAR2(255), type VARCHAR2(255), PRIMARY KEY (CIF_supp))");
         crearTabla(stmt, "CLIENT", "CREATE TABLE client(CIF_client VARCHAR2(20), denomination VARCHAR2(255), address VARCHAR2(255), type VARCHAR2(255), PRIMARY KEY(CIF_client))");
@@ -113,6 +123,49 @@ public class DatabaseConnector implements AutoCloseable {
             e.printStackTrace();
         }
     }
+    
+    // MÉTODOS PARA AÑADIR DATOS//
+    /**
+     * 
+     * @param DNI
+     * @param telefono
+     * @param direccion
+     * @param fechaContratacion
+     * @param departamento
+     * @throws SQLException 
+     */
+    public void insertarEmpleado(String nombre, String apellidos, String DNI, String telefono, String direccion, String fechaContratacion, String departamento) throws SQLException {
+    String sql = "INSERT INTO empleado (DNI, telefono, direccion, fecha_contratacion, departamento) VALUES (?, ?, ?, ?, ?)";
+    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        pstmt.setString(1, nombre);
+        pstmt.setString(2, apellidos);
+        pstmt.setString(3, DNI);
+        pstmt.setString(4, telefono);
+        pstmt.setString(5, direccion);
+        
+        java.util.Date fechaContratacionUtil;
+        try {
+            fechaContratacionUtil = parseFecha(fechaContratacion);
+        } catch (ParseException e) {
+            throw new SQLException("Formato de fecha inválido", e);
+        }
+        java.sql.Date fechaContratacionSql = new java.sql.Date(fechaContratacionUtil.getTime());
+        pstmt.setDate(6, fechaContratacionSql);
+        
+        pstmt.setString(7, departamento);
+        pstmt.executeUpdate();
+    }
+}
+
+    public void poblarTablas(){
+        try {
+            insertarEmpleado("Juan", "Sanchez Fernandez", "77766471K", "608050821", "Calle Arabial 36", "04-08-2002", "Finanzas");
+        } catch (SQLException e) {
+            System.err.println("Error al insertar empleado: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void close() throws SQLException {
