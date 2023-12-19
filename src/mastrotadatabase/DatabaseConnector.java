@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
@@ -160,7 +159,7 @@ public class DatabaseConnector implements AutoCloseable {
     }
 }
 
-    public void insertarContrato(String departamento, String fechaInicio, int duracion, String estado, Integer nEmpleado) {
+    public void insertarContrato(String departamento, String fechaInicio, double duracion, String estado, Integer nEmpleado) {
         try {
             // Validar estado
             if (!estado.equals("activo") && !estado.equals("inactivo")) {
@@ -178,14 +177,15 @@ public class DatabaseConnector implements AutoCloseable {
                 }catch (ParseException e) {
                     throw new SQLException("Formato de fecha inválido", e);
                 }
+                
                 java.sql.Date fechaInicioSql = new java.sql.Date(fechaInicioUtil.getTime());
                 pstmt.setDate(2, fechaInicioSql);
                 
-                pstmt.setInt(3, duracion);
+                pstmt.setDouble(3, duracion);
                 pstmt.setString(4, estado);
 
                 if (nEmpleado == null) {
-                    pstmt.setNull(5, java.sql.Types.INTEGER); // Establecer n_empleado como NULL si es null
+                    pstmt.setNull(5, java.sql.Types.INTEGER);
                 } else {
                     pstmt.setInt(5, nEmpleado);
                 }
@@ -193,8 +193,14 @@ public class DatabaseConnector implements AutoCloseable {
                 pstmt.executeUpdate();
             }
         } catch (SQLException e) {
-            System.err.println("Error al insertar contrato: " + e.getMessage());
-            // Dependiendo del caso, aquí podrías lanzar una excepción personalizada o manejar la situación de manera específica
+            // Comprobar si el error es debido a una violación de la clave foránea
+            // El código de error específico depende del SGBD; por ejemplo, en Oracle, podría ser ORA-02291
+            switch (e.getErrorCode()) {
+                case 2291 -> // Reemplaza 2291 con el código de error específico de tu SGBD
+                    System.err.println("Error: El número de empleado " + nEmpleado + " no existe.");
+                case 1 -> System.err.println("Error: El estado debe ser 'activo' o 'inactivo'");
+                default -> System.err.println("Error al insertar contrato: " + e.getMessage());
+            }
         }
     }
     
@@ -209,11 +215,22 @@ public class DatabaseConnector implements AutoCloseable {
     }
 
     public void poblarContrato(){
-        //insertarContrato("Logistica", fechaInicio, int duracion, String estado, Integer nEmpleado) 
-        
+        insertarContrato("Dirección", "02-04-2002", 7.5, "activo", 1); // Suponiendo que Juan tiene n_empleado = 1
+        insertarContrato("Recursos Humanos", "15-05-2010", 5.0, "activo", 2); // Suponiendo que Ana tiene n_empleado = 2
+        insertarContrato("Marketing", "07-07-2011", 4.0, "activo", 3); // Suponiendo que Carlos tiene n_empleado = 3
+        insertarContrato("Ventas", "12-09-2015", 3.5, "activo", 4); // Suponiendo que Marta tiene n_empleado = 4
+        insertarContrato("IT", "23-01-2013", 6.5, "activo", 5); // Suponiendo que Pedro tiene n_empleado = 5
+        insertarContrato("Atención al Cliente", "30-11-2018", 2.5, "activo", 6); // Suponiendo que Lucía tiene n_empleado = 6
+        insertarContrato("Logística", "16-07-2014", 7.0, "activo", null); // Sin empleado asignado
+        insertarContrato("Producción", "04-08-2017", 8.0, "inactivo", null); // Sin empleado asignado
+        insertarContrato("Investigación y Desarrollo", "21-02-2012", 6.0, "inactivo", null); // Sin empleado asignado
+        insertarContrato("Legal", "09-10-2019", 4.5, "activo", 7); // Suponiendo que Javier tiene n_empleado = 7   
     }
+    
     public void poblarTablas() {
         poblarEmpleado();
+        poblarContrato();
+        
         System.out.println("Tablas pobladas correctamente.");   
     }
 
