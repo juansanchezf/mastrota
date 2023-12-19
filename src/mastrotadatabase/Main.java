@@ -10,7 +10,6 @@ public class Main {
             // ... resto de tu código ...
         } catch (SQLException ex) {
             System.err.println("Error al conectar con la base de datos: " + ex.getMessage());
-            ex.printStackTrace();
         }
     }
 }

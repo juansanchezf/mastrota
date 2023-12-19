@@ -25,7 +25,7 @@ public class DatabaseConnector implements AutoCloseable {
             throw new RuntimeException("El driver JDBC de Oracle no se encontró en el classpath.", ex);
         } catch (SQLException ex) {
             System.err.println("No se pudo establecer la conexión con la base de datos.");
-            ex.printStackTrace();
+            //ex.printStackTrace();
             throw new RuntimeException("Error al establecer la conexión con la base de datos.", ex);
         }
     }
@@ -42,11 +42,7 @@ public class DatabaseConnector implements AutoCloseable {
     private boolean existeTabla(Statement stmt, String nombreTabla) throws SQLException {
         ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM user_tables WHERE table_name = '" + nombreTabla + "'");
         rs.next();
-        if (rs.getInt(1) > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return rs.getInt(1) > 0;
     }
 
     /**
@@ -104,7 +100,6 @@ public class DatabaseConnector implements AutoCloseable {
             System.out.println("Tablas creadas o verificadas exitosamente.");
         } catch (SQLException e) {
             System.err.println("Error al crear las tablas: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -129,7 +124,6 @@ public class DatabaseConnector implements AutoCloseable {
             System.out.println("Tablas eliminadas exitosamente.");
         } catch (SQLException e) {
             System.err.println("Error al eliminar las tablas: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -144,7 +138,6 @@ public class DatabaseConnector implements AutoCloseable {
      * @param direccion
      * @param fechaContratacion
      * @param departamento
-     * @throws SQLException
      */
     public void insertarEmpleado(String nombre, String apellidos, String DNI, String telefono, String direccion,
         String fechaContratacion, String departamento) {
@@ -177,7 +170,6 @@ public class DatabaseConnector implements AutoCloseable {
             } else {
                 System.err.println("Error al insertar empleado: " + e.getMessage());
             }
-            //e.printStackTrace();
         }
 }
 
@@ -205,7 +197,6 @@ public class DatabaseConnector implements AutoCloseable {
             }
         } catch (SQLException e) {
             System.err.println("Error al insertar contrato: " + e.getMessage());
-            e.printStackTrace();
             // Dependiendo del caso, aquí podrías lanzar una excepción personalizada o manejar la situación de manera específica
         }
     }
