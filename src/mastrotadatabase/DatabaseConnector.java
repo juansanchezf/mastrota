@@ -75,7 +75,7 @@ public class DatabaseConnector implements AutoCloseable {
     public void crearTablasSiNoExisten() {
         try (Statement stmt = connection.createStatement()) {
             crearTabla(stmt, "EMPLEADO",
-                    "CREATE TABLE empleado(n_empleado NUMBER GENERATED ALWAYS AS IDENTITY, nombre VARCHAR(50), apellidos VARCHAR(60), DNI VARCHAR2(20) UNIQUE, telefono VARCHAR2(15), direccion VARCHAR2(255), fecha_contratacion DATE, departamento VARCHAR2(255), PRIMARY KEY(n_empleado))");
+                    "CREATE TABLE empleado(n_empleado NUMBER GENERATED ALWAYS AS IDENTITY, nombre VARCHAR(50), apellidos VARCHAR(60), DNI VARCHAR2(20) UNIQUE, telefono VARCHAR2(15), direccion VARCHAR2(255), PRIMARY KEY(n_empleado))");
             crearTabla(stmt, "CONTRATO",
                     "CREATE TABLE contrato(n_contrato NUMBER GENERATED ALWAYS AS IDENTITY, departamento VARCHAR2(255), fecha_inicio DATE, duracion INT, estado VARCHAR2(8) CHECK(estado IN('activo','inactivo')), n_empleado NUMBER, PRIMARY KEY(n_contrato), FOREIGN KEY(n_empleado) REFERENCES empleado(n_empleado) ON DELETE SET NULL)");
             crearTabla(stmt, "SUPPLIER",
@@ -136,54 +136,51 @@ public class DatabaseConnector implements AutoCloseable {
      * @param DNI (Debe ser único)
      * @param telefono
      * @param direccion
-     * @param fechaContratacion
-     * @param departamento
      */
-    public void insertarEmpleado(String nombre, String apellidos, String DNI, String telefono, String direccion,
-        String fechaContratacion, String departamento) {
+    public void insertarEmpleado(String nombre, String apellidos, String DNI, String telefono, String direccion) {
     try {
-        String sql = "INSERT INTO empleado (nombre, apellidos, DNI, telefono, direccion, fecha_contratacion, departamento) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO empleado (nombre, apellidos, DNI, telefono, direccion) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, nombre);
             pstmt.setString(2, apellidos);
             pstmt.setString(3, DNI);
             pstmt.setString(4, telefono);
             pstmt.setString(5, direccion);
-
-            java.util.Date fechaContratacionUtil;
-            try {
-                fechaContratacionUtil = parseFecha(fechaContratacion);
-            } catch (ParseException e) {
-                throw new SQLException("Formato de fecha inválido", e);
-            }
-            java.sql.Date fechaContratacionSql = new java.sql.Date(fechaContratacionUtil.getTime());
-            pstmt.setDate(6, fechaContratacionSql);
-
-            pstmt.setString(7, departamento);
+            
             pstmt.executeUpdate();
         }
-        } catch (SQLException e) {
-            if (e.getErrorCode() == 1) { // El código de error específico para violaciones de la restricción UNIQUE
-                System.err.println("El DNI(" + DNI + ") que estás intentando "
-                + "insertar con "+ nombre + " " +apellidos + " ya existe."
-                + "\nEmpleado no añadido.");
-            } else {
-                System.err.println("Error al insertar empleado: " + e.getMessage());
-            }
+    } catch (SQLException e) {
+        if (e.getErrorCode() == 1) { // El código de error específico para violaciones de la restricción UNIQUE
+            System.err.println("El DNI(" + DNI + ") que estás intentando "
+            + "insertar con "+ nombre + " " +apellidos + " ya existe."
+            + "\nEmpleado no añadido.");
+        } else {
+            System.err.println("Error al insertar empleado: " + e.getMessage());
         }
+    }
 }
 
-    public void insertarContrato(String departamento, Date fechaInicio, int duracion, String estado, Integer nEmpleado) {
+    public void insertarContrato(String departamento, String fechaInicio, int duracion, String estado, Integer nEmpleado) {
         try {
             // Validar estado
             if (!estado.equals("activo") && !estado.equals("inactivo")) {
                 throw new SQLException("El estado debe ser 'activo' o 'inactivo'");
             }
 
-            String sql = "INSERT INTO contrato (departamento, fecha_inicio, duracion, estado, n_empleado) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO contrato (departamento, fecha_inicio, "
+                    + "duracion, estado, n_empleado) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
                 pstmt.setString(1, departamento);
-                pstmt.setDate(2, fechaInicio);
+                
+                java.util.Date fechaInicioUtil;
+                try{
+                    fechaInicioUtil = parseFecha(fechaInicio);
+                }catch (ParseException e) {
+                    throw new SQLException("Formato de fecha inválido", e);
+                }
+                java.sql.Date fechaInicioSql = new java.sql.Date(fechaInicioUtil.getTime());
+                pstmt.setDate(2, fechaInicioSql);
+                
                 pstmt.setInt(3, duracion);
                 pstmt.setString(4, estado);
 
@@ -202,15 +199,19 @@ public class DatabaseConnector implements AutoCloseable {
     }
     
     public void poblarEmpleado(){
-        insertarEmpleado("Juan", "Sanchez Fernandez", "77766471K", "608050821", "Calle Arabial 36", "04-08-2002", "Finanzas");
-        insertarEmpleado("Ana", "Gómez Martínez", "12345678A", "600123456", "Avenida de la Constitución 1", "15-03-2010", "Recursos Humanos");
-        insertarEmpleado("Carlos", "López García", "23456789B", "601234567", "Plaza de España 2", "07-06-2011", "Marketing");
-        insertarEmpleado("Marta", "Ruiz López", "34567890C", "602345678", "Calle Gran Vía 3", "12-09-2015", "Ventas");
-        insertarEmpleado("Pedro", "Díaz Fernández", "45678901D", "603456789", "Calle Mayor 4", "23-01-2013", "IT");
-        insertarEmpleado("Lucía", "Santos González", "56789012E", "604567890", "Calle del Prado 5", "30-11-2018", "Atención al Cliente");
-        insertarEmpleado("Javier", "Muñoz Ramírez", "56789012E", "605678901", "Paseo de la Castellana 6", "16-07-2014", "Logística");
+        insertarEmpleado("Juan", "Sanchez Fernandez", "77766471K", "608050821", "Calle Arabial 36");
+        insertarEmpleado("Ana", "Gómez Martínez", "12345678A", "600123456", "Avenida de la Constitución 1");
+        insertarEmpleado("Carlos", "López García", "23456789B", "601234567", "Plaza de España 2");
+        insertarEmpleado("Marta", "Ruiz López", "34567890C", "602345678", "Calle Gran Vía 3");
+        insertarEmpleado("Pedro", "Díaz Fernández", "45678901D", "603456789", "Calle Mayor 4");
+        insertarEmpleado("Lucía", "Santos González", "56789012E", "604567890", "Calle del Prado 5");
+        insertarEmpleado("Javier", "Muñoz Ramírez", "59789012E", "605678901", "Paseo de la Castellana 6");
     }
 
+    public void poblarContrato(){
+        //insertarContrato("Logistica", fechaInicio, int duracion, String estado, Integer nEmpleado) 
+        
+    }
     public void poblarTablas() {
         poblarEmpleado();
         System.out.println("Tablas pobladas correctamente.");   
