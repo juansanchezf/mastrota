@@ -266,6 +266,14 @@ public class DatabaseConnector implements AutoCloseable {
         }
     }
     
+    /**
+     * @brief Añade un material 
+     * @param name
+     * @param length
+     * @param height
+     * @param width
+     * @param weight 
+     */
     public void insertarMaterial(String name, double length, double height, double width, double weight){
         try {
             String sql = "INSERT INTO material (name, length, height, width, weight) VALUES (?, ?, ?, ?, ?)";
@@ -283,9 +291,39 @@ public class DatabaseConnector implements AutoCloseable {
         }
     }
     
-    public void insertarPurchase(){
-        
+    /**
+     * @brief Añade compras
+     * @param price
+     * @param quantity
+     * @param material_id
+     * @param CIF_supp 
+     */
+    public void insertarPurchase(double price, double quantity, Integer material_id, String CIF_supp) {
+        try {
+            String sql = "INSERT INTO purchase (price, quantity, material_id, CIF_supp) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setDouble(1, price);
+                pstmt.setDouble(2, quantity);
+
+                if (material_id == null) {
+                    pstmt.setNull(3, java.sql.Types.INTEGER);
+                } else {
+                    pstmt.setInt(3, material_id);
+                }
+
+                pstmt.setString(4, CIF_supp);
+
+                pstmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 2291) { // Asumiendo que 2291 es el código de error para una violación de clave foránea
+                System.err.println("Error: material_id o CIF_supp no existe.");
+            } else {
+                System.err.println("Error al insertar compra: " + e.getMessage());
+            }
+        }
     }
+
     
     public void insertarGasto(){
         
@@ -378,7 +416,12 @@ public class DatabaseConnector implements AutoCloseable {
     }
     
     public void poblarPurchase(){
-        
+        insertarPurchase(100.00, 5, 1, "75690375J"); // Compra 5 motores de Supplies Co
+        insertarPurchase(200.00, 3, 2, "84622740L"); // Compra 3 parabrisas de Office Essentials
+        insertarPurchase(150.00, 10, 3, "94611648K"); // Compra 10 asientos de Industrial Goods
+        insertarPurchase(75.00, 20, 4, "94612740V"); // Compra 20 ruedas de Global Parts
+        insertarPurchase(50.00, 15, 5, "22747569O"); // Compra 15 volantes de Tech Supplies
+        insertarPurchase(120.00, 6, 1, "95302847H");
     }
     
     public void poblarGasto(){
