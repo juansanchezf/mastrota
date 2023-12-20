@@ -67,28 +67,17 @@ public class DatabaseConnector implements AutoCloseable {
      */
     public void crearTablasSiNoExisten() {
         try (Statement stmt = connection.createStatement()) {
-            crearTabla(stmt, "EMPLEADO",
-                    "CREATE TABLE empleado(n_empleado NUMBER GENERATED ALWAYS AS IDENTITY, nombre VARCHAR(50), apellidos VARCHAR(60), DNI VARCHAR2(20) UNIQUE, telefono VARCHAR2(15), direccion VARCHAR2(255), PRIMARY KEY(n_empleado))");
-            crearTabla(stmt, "CONTRATO",
-                    "CREATE TABLE contrato(n_contrato NUMBER GENERATED ALWAYS AS IDENTITY, departamento VARCHAR2(255), fecha_inicio DATE, duracion INT, estado VARCHAR2(8) CHECK(estado IN('activo','inactivo')), n_empleado NUMBER, PRIMARY KEY(n_contrato), FOREIGN KEY(n_empleado) REFERENCES empleado(n_empleado) ON DELETE SET NULL)");
-            crearTabla(stmt, "SUPPLIER",
-                    "CREATE TABLE supplier(CIF_supp VARCHAR2(20), denomination VARCHAR2(255), address VARCHAR2(255), type VARCHAR2(255), PRIMARY KEY (CIF_supp))");
-            crearTabla(stmt, "CLIENT",
-                    "CREATE TABLE client(CIF_client VARCHAR2(20), denomination VARCHAR2(255), address VARCHAR2(255), type VARCHAR2(255), PRIMARY KEY(CIF_client))");
-            crearTabla(stmt, "MATERIAL",
-                    "CREATE TABLE material(material_id NUMBER GENERATED ALWAYS AS IDENTITY, name VARCHAR2(255), length NUMBER, height NUMBER, width NUMBER, weight NUMBER, PRIMARY KEY(material_id))");
-            crearTabla(stmt, "PURCHASE",
-                    "CREATE TABLE purchase(purchase_id NUMBER GENERATED ALWAYS AS IDENTITY, price NUMBER, quantity NUMBER, material_id NUMBER, CIF_supp VARCHAR2(20), PRIMARY KEY (purchase_id), FOREIGN KEY(material_id) REFERENCES material(material_id) ON DELETE SET NULL, FOREIGN KEY(CIF_supp) REFERENCES supplier(CIF_supp) ON DELETE SET NULL)");
-            crearTabla(stmt, "GASTO",
-                    "CREATE TABLE gasto(id_gasto NUMBER GENERATED ALWAYS AS IDENTITY, cantidad NUMBER, fecha DATE, categoria VARCHAR2(255), purchase_id NUMBER, n_contrato NUMBER, PRIMARY KEY(id_gasto), FOREIGN KEY (purchase_id) REFERENCES purchase(purchase_id) ON DELETE CASCADE, FOREIGN KEY (n_contrato) REFERENCES contrato(n_contrato) ON DELETE CASCADE)");
-            crearTabla(stmt, "CAR",
-                    "CREATE TABLE car(serial_n VARCHAR2(255), name VARCHAR2(255), power NUMBER, engine_disp NUMBER, PRIMARY KEY(serial_n))");
-            crearTabla(stmt, "CAR_MATERIAL",
-                    "CREATE TABLE car_material(serial_n VARCHAR2(255), material_id NUMBER, FOREIGN KEY (serial_n) REFERENCES car(serial_n) ON DELETE CASCADE, FOREIGN KEY (material_id) REFERENCES material(material_id) ON DELETE CASCADE, PRIMARY KEY(serial_n, material_id))");
-            crearTabla(stmt, "ORDER_",
-                    "CREATE TABLE order_(order_id NUMBER GENERATED ALWAYS AS IDENTITY, price NUMBER, serial_n VARCHAR2(255), CIF_client VARCHAR(20), PRIMARY KEY (order_id), FOREIGN KEY (serial_n) REFERENCES car(serial_n) ON DELETE CASCADE, FOREIGN KEY (CIF_client) REFERENCES client(CIF_client) ON DELETE CASCADE)");
-            crearTabla(stmt, "INGRESO",
-                    "CREATE TABLE ingreso(ingreso_id NUMBER GENERATED ALWAYS AS IDENTITY, cantidad NUMBER, fecha DATE, categoria VARCHAR2(255), order_id NUMBER, PRIMARY KEY(ingreso_id), FOREIGN KEY(order_id) REFERENCES order_(order_id) ON DELETE CASCADE)");
+            crearTabla(stmt, "EMPLEADO",    "CREATE TABLE empleado(n_empleado NUMBER GENERATED ALWAYS AS IDENTITY, nombre VARCHAR(50), apellidos VARCHAR(60), DNI VARCHAR2(20) UNIQUE, telefono VARCHAR2(15), direccion VARCHAR2(255), PRIMARY KEY(n_empleado))");
+            crearTabla(stmt, "CONTRATO",    "CREATE TABLE contrato(n_contrato NUMBER GENERATED ALWAYS AS IDENTITY, departamento VARCHAR2(255), fecha_inicio DATE, duracion INT, estado VARCHAR2(8) CHECK(estado IN('activo','inactivo')), n_empleado NUMBER, PRIMARY KEY(n_contrato), FOREIGN KEY(n_empleado) REFERENCES empleado(n_empleado) ON DELETE SET NULL)");
+            crearTabla(stmt, "SUPPLIER",    "CREATE TABLE supplier(CIF_supp VARCHAR2(20), denomination VARCHAR2(255), address VARCHAR2(255), type VARCHAR2(255), PRIMARY KEY (CIF_supp))");
+            crearTabla(stmt, "CLIENT",      "CREATE TABLE client(CIF_client VARCHAR2(20), denomination VARCHAR2(255), address VARCHAR2(255), type VARCHAR2(255), PRIMARY KEY(CIF_client))");
+            crearTabla(stmt, "MATERIAL",    "CREATE TABLE material(material_id NUMBER GENERATED ALWAYS AS IDENTITY, name VARCHAR2(255), length NUMBER, height NUMBER, width NUMBER, weight NUMBER, PRIMARY KEY(material_id))");
+            crearTabla(stmt, "PURCHASE",    "CREATE TABLE purchase(purchase_id NUMBER GENERATED ALWAYS AS IDENTITY, price NUMBER, quantity NUMBER, material_id NUMBER, CIF_supp VARCHAR2(20), PRIMARY KEY (purchase_id), FOREIGN KEY(material_id) REFERENCES material(material_id) ON DELETE SET NULL, FOREIGN KEY(CIF_supp) REFERENCES supplier(CIF_supp) ON DELETE SET NULL)");
+            crearTabla(stmt, "GASTO",       "CREATE TABLE gasto(id_gasto NUMBER GENERATED ALWAYS AS IDENTITY, cantidad NUMBER, fecha DATE, categoria VARCHAR2(255), purchase_id NUMBER, n_contrato NUMBER, PRIMARY KEY(id_gasto), FOREIGN KEY (purchase_id) REFERENCES purchase(purchase_id) ON DELETE CASCADE, FOREIGN KEY (n_contrato) REFERENCES contrato(n_contrato) ON DELETE CASCADE)");
+            crearTabla(stmt, "CAR",         "CREATE TABLE car(serial_n VARCHAR2(255), name VARCHAR2(255), power NUMBER, engine_disp NUMBER, PRIMARY KEY(serial_n))");
+            crearTabla(stmt, "CAR_MATERIAL","CREATE TABLE car_material(serial_n VARCHAR2(255), material_id NUMBER, FOREIGN KEY (serial_n) REFERENCES car(serial_n) ON DELETE CASCADE, FOREIGN KEY (material_id) REFERENCES material(material_id) ON DELETE CASCADE, PRIMARY KEY(serial_n, material_id))");
+            crearTabla(stmt, "ORDER_",      "CREATE TABLE order_(order_id NUMBER GENERATED ALWAYS AS IDENTITY, price NUMBER, serial_n VARCHAR2(255), CIF_client VARCHAR(20), PRIMARY KEY (order_id), FOREIGN KEY (serial_n) REFERENCES car(serial_n) ON DELETE CASCADE, FOREIGN KEY (CIF_client) REFERENCES client(CIF_client) ON DELETE CASCADE)");
+            crearTabla(stmt, "INGRESO",     "CREATE TABLE ingreso(ingreso_id NUMBER GENERATED ALWAYS AS IDENTITY, cantidad NUMBER, fecha DATE, categoria VARCHAR2(255), order_id NUMBER, PRIMARY KEY(ingreso_id), FOREIGN KEY(order_id) REFERENCES order_(order_id) ON DELETE CASCADE)");
 
             System.out.println("Tablas creadas o verificadas exitosamente.");
         } catch (SQLException e) {
@@ -308,7 +297,14 @@ public class DatabaseConnector implements AutoCloseable {
         }
     }
 
-    
+    /**
+     * @brief Añade gasto
+     * @param cantidad
+     * @param fecha
+     * @param categoria
+     * @param purchase_id
+     * @param n_contrato 
+     */
     public void insertarGasto(Integer cantidad, String fecha, String categoria, Integer purchase_id, Integer n_contrato) {
         try {
             String sql = "INSERT INTO gasto (cantidad, fecha, categoria, purchase_id, n_contrato) VALUES (?, TO_DATE(?, 'DD-MM-YYYY'), ?, ?, ?)";
@@ -340,8 +336,26 @@ public class DatabaseConnector implements AutoCloseable {
 
 
     
-    public void insertarCar(){
-        
+    public void insertarCar(String serial_n, String name, double power, double engine_disp){
+        try {
+            String sql = "INSERT INTO car (serial_n, name, power, engine_disp) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setString(1, serial_n);
+                pstmt.setString(2, name);
+                pstmt.setDouble(3, power);
+                pstmt.setDouble(4, engine_disp);
+
+                pstmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 1) { // El código de error específico para violaciones de la restricción UNIQUE
+                System.err.println("El numero de serie (" + serial_n + ") que estás intentando "
+                + "insertar con el coche "+ name + " ya existe."
+                + "\nCoche no añadido.");
+            } else {
+                System.err.println("Error al insertar coche: " + e.getMessage());
+            }
+        }
     }
     
     public void insertarCarMaterial(){
@@ -426,6 +440,9 @@ public class DatabaseConnector implements AutoCloseable {
         insertarMaterial("Volante", 0.4, 0.1, 0.4, 3.5);
     }
     
+    /**
+     * Pobla la tabla purchase
+     */
     public void poblarPurchase(){
         insertarPurchase(100.00, 5, 1, "75690375J"); // Compra 5 motores de Supplies Co
         insertarPurchase(200.00, 3, 2, "84622740L"); // Compra 3 parabrisas de Office Essentials
@@ -435,6 +452,9 @@ public class DatabaseConnector implements AutoCloseable {
         insertarPurchase(120.00, 6, 1, "95302847H");
     }
     
+    /**
+     * @brief Pobla la tabla gasto
+     */
     public void poblarGasto(){
          // Gastos asociados a compras
         insertarGasto(500, "05-04-2021", "Compra de motores", 1, null); // Gasto asociado a la primera compra
@@ -447,8 +467,20 @@ public class DatabaseConnector implements AutoCloseable {
         insertarGasto(3000, "30-06-2022", "Pago de contrato", null, 3); // Gasto asociado al tercer contrato
     }
     
+    /**
+     * @brief Pobla la tabla Car
+     */
     public void poblarCar(){
-        
+        insertarCar("MM1001", "Mastrota Veloz", 250, 2.0); // Coche deportivo
+        insertarCar("MM1002", "Mastrota Familiar", 150, 1.6); // Coche familiar
+        insertarCar("MM1003", "Mastrota Eco", 100, 1.2); // Coche económico
+        insertarCar("MM1004", "Mastrota Lujo", 300, 3.0); // Coche de lujo
+        insertarCar("MM1005", "Mastrota GT", 350, 3.5); // Gran turismo
+        insertarCar("MM1006", "Mastrota Compacto", 130, 1.4); // Coche compacto
+        insertarCar("MM1007", "Mastrota SUV", 200, 2.5); // SUV
+        insertarCar("MM1008", "Mastrota Roadster", 280, 2.2); // Roadster
+        insertarCar("MM1009", "Mastrota Crossover", 180, 2.0); // Crossover
+        insertarCar("MM1010", "Mastrota Eléctrico", 150, 0.0); // Coche eléctrico
     }
     
     public void poblarCarMaterial(){
