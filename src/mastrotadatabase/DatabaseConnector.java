@@ -305,11 +305,11 @@ public class DatabaseConnector implements AutoCloseable {
      * @param purchase_id
      * @param n_contrato 
      */
-    public void insertarGasto(Integer cantidad, String fecha, String categoria, Integer purchase_id, Integer n_contrato) {
+    public void insertarGasto(double cantidad, String fecha, String categoria, Integer purchase_id, Integer n_contrato) {
         try {
             String sql = "INSERT INTO gasto (cantidad, fecha, categoria, purchase_id, n_contrato) VALUES (?, TO_DATE(?, 'DD-MM-YYYY'), ?, ?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-                pstmt.setInt(1, cantidad);
+                pstmt.setDouble(1, cantidad);
                 pstmt.setString(2, fecha);
                 pstmt.setString(3, categoria);
 
@@ -333,7 +333,6 @@ public class DatabaseConnector implements AutoCloseable {
             }
         }
     }
-
 
     /**
      * @brief Añade un coche a la tabla
@@ -413,11 +412,41 @@ public class DatabaseConnector implements AutoCloseable {
         }
     }
     
-    public void insertarIngreso(){
-        
+    /**
+     * @brief Añade un ingreso en la tabla
+     * @param cantidad
+     * @param fecha
+     * @param categoria
+     * @param order_id 
+     */
+    public void insertarIngreso(double cantidad, String fecha, String categoria, Integer order_id) {
+        try {
+            String sql = "INSERT INTO ingreso (cantidad, fecha, categoria, order_id) VALUES (?, TO_DATE(?, 'DD-MM-YYYY'), ?, ?)";
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setDouble(1, cantidad);
+                pstmt.setString(2, fecha);
+                pstmt.setString(3, categoria);
+
+                if (order_id != null) {
+                    pstmt.setInt(4, order_id);
+                } else {
+                    pstmt.setNull(4, java.sql.Types.INTEGER);
+                }
+
+                pstmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 2291) {
+                System.err.println("Error: order_id (" + order_id + ") no existe en la base de datos.");
+            } else {
+                System.err.println("Error al insertar ingreso: " + e.getMessage());
+            }
+        }
     }
+
     
     //POBLACION DE TABLAS//
+    
     /**
      * @brief Añade información a la tabla empleado
      */
@@ -556,7 +585,7 @@ public class DatabaseConnector implements AutoCloseable {
     }
     
     /**
-     * Puebla la tabla order
+     * @brief Puebla la tabla order
      */
     public void poblarOrder(){
         insertarOrder(30000.00, "MM1001", "12384978A"); // Miguel Torres compra Mastrota Veloz
@@ -571,11 +600,33 @@ public class DatabaseConnector implements AutoCloseable {
         insertarOrder(30000.00, "MM1010", "01234567J"); // Isabel Díaz compra Mastrota Eléctrico
     }
     
+    /**
+     * @brief puebla la tabla Ingreso
+     */
     public void poblarIngreso(){
+        //Ingresos relacionados con venta de coches.
+        insertarIngreso(30000.00, "06-04-2021", "Venta de coche", 1); // Ingreso por la venta a Miguel Torres
+        insertarIngreso(20000.00, "11-05-2021", "Venta de coche", 2); // Ingreso por la venta a Laura García
+        insertarIngreso(18000.00, "16-06-2021", "Venta de coche", 3); // Ingreso por la venta a Alejandro Sánchez
+        insertarIngreso(40000.00, "21-07-2021", "Venta de coche", 4); // Ingreso por la venta a Carmen López
+        insertarIngreso(35000.00, "26-08-2021", "Venta de coche", 5); // Ingreso por la venta a Francisco Martíne
         
+        // Ingresos por servicios (mantenimiento, reparaciones, etc.)
+        insertarIngreso(5000.00, "10-07-2021", "Servicios de mantenimiento", null);
+
+        // Ingresos por alquiler de instalaciones o equipos
+        insertarIngreso(3000.00, "15-08-2021", "Alquiler de equipos", null);
+
+        // Ingresos por actividades secundarias (por ejemplo, cursos de conducción)
+        insertarIngreso(2000.00, "20-09-2021", "Cursos de conducción", null);
+
+        // Ingresos por intereses (por ejemplo, intereses de inversiones financieras)
+        insertarIngreso(1500.00, "25-10-2021", "Intereses financieros", null);
     }
     
-    
+    /**
+     * @brief Llama al resto de métodos de población
+     */
     public void poblarTablas() {
         poblarEmpleado();
         poblarContrato();
