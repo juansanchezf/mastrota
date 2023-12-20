@@ -266,12 +266,12 @@ public class DatabaseConnector implements AutoCloseable {
         }
     }
     
-    public void insertarMaterial(String name, double lenght, double height, double width, double weight){
+    public void insertarMaterial(String name, double length, double height, double width, double weight){
         try {
-            String sql = "INSERT INTO material (name, lenght, height, width, weight) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO material (name, length, height, width, weight) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
                 pstmt.setString(1, name);
-                pstmt.setDouble(2, lenght);
+                pstmt.setDouble(2, length);
                 pstmt.setDouble(3, height);
                 pstmt.setDouble(4, width);
                 pstmt.setDouble(5, weight);
@@ -370,7 +370,11 @@ public class DatabaseConnector implements AutoCloseable {
      * @brief añade información sobre materiales
      */
     public void poblarMaterial(){
-        
+        insertarMaterial("Motor", 1.2, 0.7, 0.8, 220.0);
+        insertarMaterial("Parabrisas", 1.5, 0.02, 1.0, 15.0);
+        insertarMaterial("Asiento", 0.5, 1.0, 0.6, 18.0);
+        insertarMaterial("Rueda", 0.6, 0.6, 0.25, 12.0);
+        insertarMaterial("Volante", 0.4, 0.1, 0.4, 3.5);
     }
     
     public void poblarPurchase(){
