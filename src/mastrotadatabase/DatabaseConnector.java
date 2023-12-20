@@ -335,7 +335,13 @@ public class DatabaseConnector implements AutoCloseable {
     }
 
 
-    
+    /**
+     * @brief Añade un coche a la tabla
+     * @param serial_n
+     * @param name
+     * @param power
+     * @param engine_disp 
+     */
     public void insertarCar(String serial_n, String name, double power, double engine_disp){
         try {
             String sql = "INSERT INTO car (serial_n, name, power, engine_disp) VALUES (?, ?, ?, ?)";
@@ -358,9 +364,24 @@ public class DatabaseConnector implements AutoCloseable {
         }
     }
     
-    public void insertarCarMaterial(){
-        
+    public void insertarCarMaterial(String serial_n, Integer material_id) {
+    try {
+        String sql = "INSERT INTO car_material (serial_n, material_id) VALUES (?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, serial_n);
+            pstmt.setInt(2, material_id);
+
+            pstmt.executeUpdate();
+        }
+    } catch (SQLException e) {
+        if (e.getErrorCode() == 2291) {
+            System.err.println("Error: serial_n (" + serial_n + ") o material_id (" + material_id + ") no existen en las tablas car o material.");
+        } else {
+            System.err.println("Error al insertar en car_material: " + e.getMessage());
+        }
     }
+}
+
     
     public void insertarOrder(){
         
@@ -484,7 +505,26 @@ public class DatabaseConnector implements AutoCloseable {
     }
     
     public void poblarCarMaterial(){
-        
+        // Relacionar motores con varios coches
+        insertarCarMaterial("MM1001", 1); // Motor en Mastrota Veloz
+        insertarCarMaterial("MM1004", 1); // Motor en Mastrota Lujo
+        insertarCarMaterial("MM1005", 1); // Motor en Mastrota GT
+
+        // Relacionar parabrisas con coches
+        insertarCarMaterial("MM1002", 2); // Parabrisas en Mastrota Familiar
+        insertarCarMaterial("MM1003", 2); // Parabrisas en Mastrota Eco
+
+        // Relacionar asientos con coches
+        insertarCarMaterial("MM1006", 3); // Asiento en Mastrota Compacto
+        insertarCarMaterial("MM1007", 3); // Asiento en Mastrota SUV
+
+        // Relacionar ruedas con coches
+        insertarCarMaterial("MM1008", 4); // Rueda en Mastrota Roadster
+        insertarCarMaterial("MM1009", 4); // Rueda en Mastrota Crossover
+
+        // Relacionar volantes con coches
+        insertarCarMaterial("MM1010", 5); // Volante en Mastrota Eléctrico
+        insertarCarMaterial("MM1001", 5); // Volante en Mastrota Veloz
     }
     
     public void poblarOrder(){
