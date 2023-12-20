@@ -364,6 +364,11 @@ public class DatabaseConnector implements AutoCloseable {
         }
     }
     
+    /**
+     * @brief Añade una relación en carmaterial
+     * @param serial_n
+     * @param material_id 
+     */
     public void insertarCarMaterial(String serial_n, Integer material_id) {
     try {
         String sql = "INSERT INTO car_material (serial_n, material_id) VALUES (?, ?)";
@@ -449,7 +454,6 @@ public class DatabaseConnector implements AutoCloseable {
         insertarClient("01234567J", "Isabel Díaz", "Calle San Francisco 6, Alicante", "generic");
     }
     
-    
     /**
      * @brief añade información sobre materiales
      */
@@ -504,6 +508,9 @@ public class DatabaseConnector implements AutoCloseable {
         insertarCar("MM1010", "Mastrota Eléctrico", 150, 0.0); // Coche eléctrico
     }
     
+    /**
+     * @brief Puebla la tabla CarMaterial
+     */
     public void poblarCarMaterial(){
         // Relacionar motores con varios coches
         insertarCarMaterial("MM1001", 1); // Motor en Mastrota Veloz
