@@ -387,9 +387,30 @@ public class DatabaseConnector implements AutoCloseable {
     }
 }
 
-    
-    public void insertarOrder(){
-        
+    /**
+     * @brief Añade una orden en la tabla orden
+     * @param price
+     * @param serial_n
+     * @param CIF_client 
+     */
+    public void insertarOrder(double price, String serial_n, String CIF_client){
+        try {
+            String sql = "INSERT INTO order_ (price, serial_n, CIF_client) VALUES (?, ?, ?)";
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setDouble(1, price);
+                pstmt.setString(2,serial_n);
+                pstmt.setString(3,CIF_client);
+
+                pstmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 2291) { // Asumiendo que 2291 es el código de error para una violación de clave foránea
+                System.err.println("Error: el número de serie (" + serial_n + ") o el CIF_supp(" +CIF_client + ") no existen.");
+                System.err.println("Pedido no añadido");
+            } else {
+                System.err.println("Error al insertar orden: " + e.getMessage());
+            }
+        }
     }
     
     public void insertarIngreso(){
@@ -534,8 +555,20 @@ public class DatabaseConnector implements AutoCloseable {
         insertarCarMaterial("MM1001", 5); // Volante en Mastrota Veloz
     }
     
+    /**
+     * Puebla la tabla order
+     */
     public void poblarOrder(){
-        
+        insertarOrder(30000.00, "MM1001", "12384978A"); // Miguel Torres compra Mastrota Veloz
+        insertarOrder(20000.00, "MM1002", "23456789B"); // Laura García compra Mastrota Familiar
+        insertarOrder(18000.00, "MM1003", "34236490C"); // Alejandro Sánchez compra Mastrota Eco
+        insertarOrder(40000.00, "MM1004", "45678901D"); // Carmen López compra Mastrota Lujo
+        insertarOrder(35000.00, "MM1005", "56329012E"); // Francisco Martínez compra Mastrota GT
+        insertarOrder(22000.00, "MM1006", "67890123F"); // Sofía González compra Mastrota Compacto
+        insertarOrder(25000.00, "MM1007", "78901234G"); // Juan Fernández compra Mastrota SUV
+        insertarOrder(28000.00, "MM1008", "89012345H"); // Elena Rodríguez compra Mastrota Roadster
+        insertarOrder(27000.00, "MM1009", "90123456I"); // Antonio Navarro compra Mastrota Crossover
+        insertarOrder(30000.00, "MM1010", "01234567J"); // Isabel Díaz compra Mastrota Eléctrico
     }
     
     public void poblarIngreso(){
@@ -553,6 +586,7 @@ public class DatabaseConnector implements AutoCloseable {
         poblarGasto();
         poblarCar();
         poblarCarMaterial();
+        
         poblarOrder();
         poblarIngreso();
         
