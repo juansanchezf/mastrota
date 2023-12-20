@@ -159,6 +159,14 @@ public class DatabaseConnector implements AutoCloseable {
     }
 }
 
+    /**
+     * @brief Añade un contrato
+     * @param departamento
+     * @param fechaInicio
+     * @param duracion
+     * @param estado
+     * @param nEmpleado 
+     */
     public void insertarContrato(String departamento, String fechaInicio, double duracion, String estado, Integer nEmpleado) {
         try {
             // Validar estado
@@ -204,16 +212,118 @@ public class DatabaseConnector implements AutoCloseable {
         }
     }
     
-    public void poblarEmpleado(){
-        insertarEmpleado("Juan", "Sanchez Fernandez", "77766471K", "608050821", "Calle Arabial 36");
-        insertarEmpleado("Ana", "Gómez Martínez", "12345678A", "600123456", "Avenida de la Constitución 1");
-        insertarEmpleado("Carlos", "López García", "23456789B", "601234567", "Plaza de España 2");
-        insertarEmpleado("Marta", "Ruiz López", "34567890C", "602345678", "Calle Gran Vía 3");
-        insertarEmpleado("Pedro", "Díaz Fernández", "45678901D", "603456789", "Calle Mayor 4");
-        insertarEmpleado("Lucía", "Santos González", "56789012E", "604567890", "Calle del Prado 5");
-        insertarEmpleado("Javier", "Muñoz Ramírez", "59789012E", "605678901", "Paseo de la Castellana 6");
+    /**
+     * @brief Añade un proveedor
+     * @param CIF
+     * @param denomination
+     * @param address
+     * @param type 
+     */
+    public void insertarSupplier(String CIF, String denomination, String address, String type){
+        try {
+            String sql = "INSERT INTO supplier (CIF_supp, denomination, "
+                    + "address, type) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setString(1, CIF);
+                pstmt.setString(2, denomination);
+                pstmt.setString(3, address);
+                pstmt.setString(4, type);
+                
+                pstmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            if(e.getErrorCode()==1){
+                System.err.println("El CIF " + CIF + " ya estaba introducido previamente.");
+            }
+            else{
+                System.err.println("Error al insertar supplier: " + e.getMessage());
+            }
+            
+        }
     }
+    
+    /**
+     * @brief Añade un cliente
+     * @param CIF_client
+     * @param denomination
+     * @param address
+     * @param type 
+     */
+    public void insertarClient(String CIF_client, String denomination, String address, String type){
+        try{
+            String sql = "INSERT INTO client (CIF_client, denomination, "
+                    + "address, type) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setString(1, CIF_client);
+                pstmt.setString(2, denomination);
+                pstmt.setString(3, address);
+                pstmt.setString(4, type);
+                
+                pstmt.executeUpdate();
+            }
+        }catch (SQLException e){
+            
+        }
+    }
+    
+    public void insertarMaterial(String name, double lenght, double height, double width, double weight){
+        try {
+            String sql = "INSERT INTO material (name, lenght, height, width, weight) VALUES (?, ?, ?, ?, ?)";
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setString(1, name);
+                pstmt.setDouble(2, lenght);
+                pstmt.setDouble(3, height);
+                pstmt.setDouble(4, width);
+                pstmt.setDouble(5, weight);
 
+                pstmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al insertar material: " + e.getMessage());
+        }
+    }
+    
+    public void insertarPurchase(){
+        
+    }
+    
+    public void insertarGasto(){
+        
+    }
+    
+    public void insertarCar(){
+        
+    }
+    
+    public void insertarCarMaterial(){
+        
+    }
+    
+    public void insertarOrder(){
+        
+    }
+    
+    public void insertarIngreso(){
+        
+    }
+    
+    //POBLACION DE TABLAS//
+    /**
+     * @brief Añade información a la tabla empleado
+     */
+    public void poblarEmpleado(){
+        insertarEmpleado("Juan", "Sanchez Fernandez", "77766471K", "608050821", "Calle Arabial 36, Granada");
+        insertarEmpleado("Ana", "Gómez Martínez", "12345678A", "600123456", "Avenida de la Constitución 1, Madrid");
+        insertarEmpleado("Carlos", "López García", "23456789B", "601234567", "Plaza de España 2, Valencia");
+        insertarEmpleado("Marta", "Ruiz López", "34567890C", "602345678", "Calle Gran Vía 3, Sevilla");
+        insertarEmpleado("Pedro", "Díaz Fernández", "45678901D", "603456789", "Calle Mayor 4, Almería");
+        insertarEmpleado("Lucía", "Santos González", "56789012E", "604567890", "Calle del Prado 5, Jaén");
+        insertarEmpleado("Pedro", "Fuentes Tirado", "59789012E", "605678901", "Paseo de la Castellana 6, Alcalá la Real");
+    }
+    
+    /**
+     * @brief Añade información a la tabla Contrato
+     */
     public void poblarContrato(){
         insertarContrato("Dirección", "02-04-2002", 7.5, "activo", 1); // Suponiendo que Juan tiene n_empleado = 1
         insertarContrato("Recursos Humanos", "15-05-2010", 5.0, "activo", 2); // Suponiendo que Ana tiene n_empleado = 2
@@ -224,12 +334,82 @@ public class DatabaseConnector implements AutoCloseable {
         insertarContrato("Logística", "16-07-2014", 7.0, "activo", null); // Sin empleado asignado
         insertarContrato("Producción", "04-08-2017", 8.0, "inactivo", null); // Sin empleado asignado
         insertarContrato("Investigación y Desarrollo", "21-02-2012", 6.0, "inactivo", null); // Sin empleado asignado
-        insertarContrato("Legal", "09-10-2019", 4.5, "activo", 7); // Suponiendo que Javier tiene n_empleado = 7   
+        insertarContrato("Legal", "09-10-2019", 4.5, "activo", 7); // Suponiendo que Javier tiene n_empleado = 7
     }
+    
+    /**
+     * @brief Añade información a la tabla Supplier
+     */
+    public void poblarSupplier(){
+        insertarSupplier("75690375J", "Supplies Co", "1234 Main St", "branded");
+        insertarSupplier("84622740L", "Office Essentials", "5678 Second St", "generic");
+        insertarSupplier("94611648K", "Industrial Goods", "9101 Third Ave", "branded");
+        insertarSupplier("94612740V", "Global Parts", "1122 Fourth Blvd", "generic");
+        insertarSupplier("22747569O", "Tech Supplies", "1314 Fifth Road", "branded");
+        insertarSupplier("95302847H", "General Equipments", "1516 Sixth Lane", "generic");
+    }
+    
+    /**
+     * @brief Añade clientes
+     */
+    public void poblarClient(){
+        insertarClient("12384978A", "Miguel Torres", "Calle Gran Vía 28, Madrid", "branded");
+        insertarClient("23456789B", "Laura García", "Paseo de Gracia 15, Barcelona", "generic");
+        insertarClient("34236490C", "Alejandro Sánchez", "Avenida de la Constitución 5, Sevilla", "branded");
+        insertarClient("45678901D", "Carmen López", "Calle Bailén 41, Granada", "generic");
+        insertarClient("56329012E", "Francisco Martínez", "Plaza Nueva 22, Bilbao", "branded");
+        insertarClient("67890123F", "Sofía González", "Calle Príncipe 25, Vigo", "generic");
+        insertarClient("78901234G", "Juan Fernández", "Calle Mayor 30, Zaragoza", "branded");
+        insertarClient("89012345H", "Elena Rodríguez", "Calle Tetuán 12, Valencia", "generic");
+        insertarClient("90123456I", "Antonio Navarro", "Ronda Sant Pere 19, Palma", "branded");
+        insertarClient("01234567J", "Isabel Díaz", "Calle San Francisco 6, Alicante", "generic");
+    }
+    
+    
+    /**
+     * @brief añade información sobre materiales
+     */
+    public void poblarMaterial(){
+        
+    }
+    
+    public void poblarPurchase(){
+        
+    }
+    
+    public void poblarGasto(){
+        
+    }
+    
+    public void poblarCar(){
+        
+    }
+    
+    public void poblarCarMaterial(){
+        
+    }
+    
+    public void poblarOrder(){
+        
+    }
+    
+    public void poblarIngreso(){
+        
+    }
+    
     
     public void poblarTablas() {
         poblarEmpleado();
         poblarContrato();
+        poblarSupplier();
+        poblarClient();
+        poblarMaterial();
+        poblarPurchase();
+        poblarGasto();
+        poblarCar();
+        poblarCarMaterial();
+        poblarOrder();
+        poblarIngreso();
         
         System.out.println("Tablas pobladas correctamente.");   
     }
