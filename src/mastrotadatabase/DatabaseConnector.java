@@ -6,8 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
 
 public class DatabaseConnector implements AutoCloseable {
     private Connection connection;
@@ -33,10 +31,6 @@ public class DatabaseConnector implements AutoCloseable {
         return this.connection;
     }
 
-    public java.util.Date parseFecha(String fechaStr) throws ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        return formatter.parse(fechaStr);
-    }
 
     private boolean existeTabla(Statement stmt, String nombreTabla) throws SQLException {
         ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM user_tables WHERE table_name = '" + nombreTabla + "'");
@@ -175,20 +169,10 @@ public class DatabaseConnector implements AutoCloseable {
             }
 
             String sql = "INSERT INTO contrato (departamento, fecha_inicio, "
-                    + "duracion, estado, n_empleado) VALUES (?, ?, ?, ?, ?)";
+                    + "duracion, estado, n_empleado) VALUES (?, TO_DATE(?, 'DD-MM-YYYY'), ?, ?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
                 pstmt.setString(1, departamento);
-                
-                java.util.Date fechaInicioUtil;
-                try{
-                    fechaInicioUtil = parseFecha(fechaInicio);
-                }catch (ParseException e) {
-                    throw new SQLException("Formato de fecha inválido", e);
-                }
-                
-                java.sql.Date fechaInicioSql = new java.sql.Date(fechaInicioUtil.getTime());
-                pstmt.setDate(2, fechaInicioSql);
-                
+                pstmt.setString(2, fechaInicio);
                 pstmt.setDouble(3, duracion);
                 pstmt.setString(4, estado);
 
@@ -298,7 +282,7 @@ public class DatabaseConnector implements AutoCloseable {
      * @param material_id
      * @param CIF_supp 
      */
-    public void insertarPurchase(double price, double quantity, Integer material_id, String CIF_supp) {
+    public void insertarPurchase(double price, Integer quantity, Integer material_id, String CIF_supp) {
         try {
             String sql = "INSERT INTO purchase (price, quantity, material_id, CIF_supp) VALUES (?, ?, ?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -325,9 +309,36 @@ public class DatabaseConnector implements AutoCloseable {
     }
 
     
-    public void insertarGasto(){
-        
+    public void insertarGasto(Integer cantidad, String fecha, String categoria, Integer purchase_id, Integer n_contrato) {
+        try {
+            String sql = "INSERT INTO gasto (cantidad, fecha, categoria, purchase_id, n_contrato) VALUES (?, TO_DATE(?, 'DD-MM-YYYY'), ?, ?, ?)";
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setInt(1, cantidad);
+                pstmt.setString(2, fecha);
+                pstmt.setString(3, categoria);
+
+                if (purchase_id != null) {
+                    pstmt.setInt(4, purchase_id);
+                    pstmt.setNull(5, java.sql.Types.INTEGER);
+                } else if (n_contrato != null) {
+                    pstmt.setNull(4, java.sql.Types.INTEGER);
+                    pstmt.setInt(5, n_contrato);
+                } else {
+                    throw new SQLException("Uno de purchase_id o n_contrato debe tener un valor");
+                }
+
+                pstmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 2291) { // Asumiendo que 2291 es el código de error para una violación de clave foránea
+                System.err.println("Error: purchase_id o n_contrato no existe en la base de datos.");
+            } else {
+                System.err.println("Error al insertar gasto: " + e.getMessage());
+            }
+        }
     }
+
+
     
     public void insertarCar(){
         
@@ -425,7 +436,15 @@ public class DatabaseConnector implements AutoCloseable {
     }
     
     public void poblarGasto(){
-        
+         // Gastos asociados a compras
+        insertarGasto(500, "05-04-2021", "Compra de motores", 1, null); // Gasto asociado a la primera compra
+        insertarGasto(600, "10-05-2021", "Compra de parabrisas", 2, null); // Gasto asociado a la segunda compra
+        insertarGasto(1500, "15-06-2021", "Compra de asientos", 3, null); // Gasto asociado a la tercera compra
+
+        // Gastos asociados a contratos
+        insertarGasto(2000, "20-04-2022", "Pago de contrato", null, 1); // Gasto asociado al primer contrato
+        insertarGasto(2500, "25-05-2022", "Pago de contrato", null, 2); // Gasto asociado al segundo contrato
+        insertarGasto(3000, "30-06-2022", "Pago de contrato", null, 3); // Gasto asociado al tercer contrato
     }
     
     public void poblarCar(){
