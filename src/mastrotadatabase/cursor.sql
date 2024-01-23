@@ -1,17 +1,18 @@
-DECLARE @Nombre VARCHAR(100)
-
-DECLARE modelos CURSOR FOR
-SELECT NAME FROM CAR
-
-OPEN modelos
-
-FETCH NEXT FROM modelos INTO @Nombre
-
-WHILE @@FETCH_STATUS = 0
+DECLARE
+  Nombre VARCHAR2(100);
+  CURSOR modelos IS
+    SELECT NAME FROM CAR;
 BEGIN
-    PRINT @Nombre
-    FETCH NEXT FROM modelos INTO @Nombre
-END
+  OPEN modelos;
+  FETCH modelos INTO Nombre;
 
-CLOSE modelos
-DEALLOCATE modelos
+  WHILE modelos%FOUND
+  LOOP
+    DBMS_OUTPUT.PUT_LINE(Nombre);
+
+    FETCH modelos INTO Nombre;
+  END LOOP;
+
+  CLOSE modelos;
+END;
+/
