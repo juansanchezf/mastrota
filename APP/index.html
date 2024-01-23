@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Inserción de Cliente</title>
+    <!-- Agrega el enlace a Bootstrap CSS -->
+    <!-- Includi Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<!-- Includi jQuery e Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        /* Estilo para la barra de color verde */
+        .header-bar {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            display: flex; /* Hace que los elementos hijos se alineen en una fila */
+            align-items: center; /* Centra verticalmente los elementos hijos */
+        }
+
+        .btn {
+            width: 170px;
+            }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        /* Estilo para la card de Bootstrap */
+        .card {
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        .header-img {
+            max-width: 100px;
+            margin-right: 30px;
+        }
+
+        .header-buttons {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <!-- Barra de color verde como encabezado -->
+    <div class="header-bar bg-success text-white d-flex justify-content-between align-items-center p-3">
+        <div class="d-flex align-items-center">
+            <img src="https://i.postimg.cc/0NWc5jMD/LOGO.png" alt="Logo" class="header-img mr-3">
+            <h2 class="m-0">MASTROTA</h2>
+        </div>
+        <!-- Bottoni nell'header allineati a destra con stili Bootstrap -->
+        <div class="d-flex">
+            <div class="dropdown me-2">
+                <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    Crear Tabla
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                   
+                <li><a class="dropdown-item" href="#"><button class="btn btn-secondary" onclick="location.href='main.jsp?command=empleado&action=crear'">Crear Empleado</button></a></li>
+                <li><a class="dropdown-item" href="#"><button class="btn btn-secondary" onclick="location.href='main.jsp?command=contrato&action=crear'">Crear Contrato</button></a></li>
+                <li><a class="dropdown-item" href="#"><button class="btn btn-secondary" onclick="location.href='main.jsp?command=supplier&action=crear'">Crear Supplier</button></a></li>
+                <li><a class="dropdown-item" href="#"><button class="btn btn-secondary" onclick="location.href='main.jsp?command=client&action=crear'">Crear Client</button></a></li>
+                <li><a class="dropdown-item" href="#"><button class="btn btn-secondary" onclick="location.href='main.jsp?command=material&action=crear'">Crear Material</button></a></li>
+                <li><a class="dropdown-item" href="#"><button class="btn btn-secondary" onclick="location.href='main.jsp?command=purchase&action=crear'">Crear Purchase</button></a></li>
+                <li><a class="dropdown-item" href="#"><button class="btn btn-secondary" onclick="location.href='main.jsp?command=gasto&action=crear'">Crear Gasto</button></a></li>
+                <li><a class="dropdown-item" href="#"><button class="btn btn-secondary" onclick="location.href='main.jsp?command=car&action=crear'">Crear Car</button></a></li>
+                <li><a class="dropdown-item" href="#"><button class="btn btn-secondary" onclick="location.href='main.jsp?command=car_material&action=crear'">Crear car_material</button></a></li>
+                <li><a class="dropdown-item" href="#"><button class="btn btn-secondary" onclick="location.href='main.jsp?command=order_&action=crear'">Crear Order</button></a></li>
+                <li><a class="dropdown-item" href="#"><button class="btn btn-secondary" onclick="location.href='main.jsp?command=ingreso&action=crear'">Crear Ingreso</button></a></li>
+                </ul>
+            </div>
+                
+            <form action="main.jsp" method="post">
+                <input type="hidden" name="action" value="borrar">
+                <button type="submit" class="btn btn-danger ml-2">Borrar Tablas</button>
+            </form>
+
+        </div>
+    </div>
+
+    
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+    <!-- Card de Bootstrap para contener el formulario -->
+    <div class="card">
+        <div class="card-header bg-success text-center text-white">EMPLEADO</div>
+        <div class="card-body">
+            <button class="btn btn-success" onclick="mostrarFormularioEmpleado()">Agregar Empleado</button>
+            <button class="btn btn-success" onclick="location.href='empl.jsp?action=listEmployees'">Listar Empleado</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioEmpl()">Eliminar Empleado</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioEm()">Modificar Empleado</button>
+
+            <form action="empl.jsp" method="post" id="editEmpl" style="display: none;">
+                
+
+                <label for="nombre">n_empleado:</label>
+                <input type="text" id="n_empleado" name="n_empleado" class="form-control" required>
+
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" required>
+
+                <label for="apellido">Apellido:</label>
+                <input type="text" id="apellido" name="apellido" class="form-control" required>
+
+                <label for="dni">DNI:</label>
+                <input type="text" id="dni" name="dni" class="form-control" required>
+
+                <label for="telefono">Teléfono:</label>
+                <input type="text" id="telefono" name="telefono" class="form-control" required>
+
+                <label for="direccion">Dirección:</label>
+                <input type="text" id="direccion" name="direccion" class="form-control" required>
+
+                <input type="hidden" name="action" value="editEmployee">
+                <button type="submit" class="btn btn-warning">Modificar</button>
+            </form>
+
+            <form action="empl.jsp" method="post" id="deleteEmpl" style="display: none;">
+                <input type="hidden" name="action" value="deleteEmployee">
+                <label for="nombre">n_empleado:</label>
+                <input type="text" id="n_empleado" name="n_empleado" class="form-control" required>
+                <button type="submit" class="btn btn-danger mt-2">Borrar</button>
+            </form>
+
+            <form action="empl.jsp" method="post" id="formEmpleado" style="display: none;">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" required>
+
+                <label for="apellido">Apellido:</label>
+                <input type="text" id="apellido" name="apellido" class="form-control" required>
+
+                <label for="dni">DNI:</label>
+                <input type="text" id="dni" name="dni" class="form-control" required>
+
+                <label for="telefono">Teléfono:</label>
+                <input type="text" id="telefono" name="telefono" class="form-control" required>
+
+                <label for="direccion">Dirección:</label>
+                <input type="text" id="direccion" name="direccion" class="form-control" required>
+
+                <input type="hidden" name="action" value="addEmployee">
+                <button type="submit" class="btn btn-primary mt-2" >Enviar</button>
+            </form>
+        </div>
+    </div>
+    </div>
+
+    
+
+    
+    <script>
+        function mostrarFormularioEmpleado() {
+            var formCliente = document.getElementById("formEmpleado");
+            if (formCliente.style.display === "block") {
+                formCliente.style.display = "none";
+            }   else {
+                formCliente.style.display = "block";}
+        }
+        function mostrarFormularioEmpl() {
+            var formCliente = document.getElementById("deleteEmpl");
+            if (formCliente.style.display === "block") {
+                formCliente.style.display = "none";
+            }   else {
+                formCliente.style.display = "block";}
+        }
+
+        function mostrarFormularioEm() {
+            var formCliente = document.getElementById("editEmpl");
+            if (formCliente.style.display === "block") {
+                formCliente.style.display = "none";
+            }   else {
+                formCliente.style.display = "block";}
+        }
+
+    </script>
+
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-header bg-success text-center text-white">CONTRATO</div>
+        <div class="card-body">
+            <button class="btn btn-success" onclick="mostrarFormularioContrato()">Agregar Contrato</button>
+            <button class="btn btn-success" onclick="location.href='contr.jsp?action=listContrato'">Listar Contrato</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioContr()">Eliminar Contrato</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioCon()">Modificar Contrato</button>
+            
+        <!-- Form contract -->
+        <form id="formContrato" style="display: none;" action="contr.jsp" method="post">
+            
+            <div class="form-group">
+                <label for="departamento">Departamento:</label>
+                <input type="text" class="form-control" id="departamento" name="departamento" placeholder="Ingrese el departamento" required>
+            </div>
+            <div class="form-group">
+                <label for="fechaInicio">Fecha de Inicio:</label>
+                <input type="text" class="form-control" id="fecha_inicio" name="fecha_inicio" placeholder="Ingrese la fecha de inicio (DD-MM-YYYY)" required>
+            </div>
+            <div class="form-group">
+                <label for="duracion">Duración:</label>
+                <input type="number" class="form-control" id="duracion" name="duracion" placeholder="Ingrese la duración" required>
+            </div>
+            <div class="form-group">
+                <label for="n_empleado">Número de Empleado:</label>
+                <input type="number" class="form-control" id="n_empleado" name="n_empleado" placeholder="Ingrese el número de empleado">
+            </div>
+            
+            <input type="hidden" name="action" value="addContrato">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            
+        </form>
+
+        <form action="contr.jsp" method="post" id="formContr" style="display: none;">
+            <input type="hidden" name="action" value="deleteContrato">
+            <label for="nombre">n_contrato</label>
+            <input type="text" id="n_contrato" name="n_contrato" class="form-control" required>
+            <button type="submit" class="btn btn-danger mt-2">Borrar</button>
+        </form>
+
+        <form id="formCon" style="display: none;" action="contr.jsp" method="post">
+            
+            <div class="form-group">
+                <label for="departamento">n_contrato:</label>
+                <input type="text" class="form-control" id="n_contrato" name="n_contrato" placeholder="Ingrese el numero contrato" required>
+            </div>
+
+            <div class="form-group">
+                <label for="departamento">Departamento:</label>
+                <input type="text" class="form-control" id="departamento" name="departamento" placeholder="Ingrese el departamento" required>
+            </div>
+            <div class="form-group">
+                <label for="fechaInicio">Fecha de Inicio:</label>
+                <input type="text" class="form-control" id="fecha_inicio" name="fecha_inicio" placeholder="Ingrese la fecha de inicio (DD-MM-YYYY)" required>
+            </div>
+            <div class="form-group">
+                <label for="duracion">Duración:</label>
+                <input type="number" class="form-control" id="duracion" name="duracion" placeholder="Ingrese la duración" required>
+            </div>
+            <div class="form-group">
+                <label for="n_empleado">Número de Empleado:</label>
+                <input type="number" class="form-control" id="n_empleado" name="n_empleado" placeholder="Ingrese el número de empleado">
+            </div>
+            
+                <input type="hidden" name="action" value="modifyContr">
+                <button type="submit" class="btn btn-warning">Modificar</button>
+            
+        </form>
+    </div>
+</div>
+</div>
+
+<script>
+    function mostrarFormularioContrato() {
+            var form = document.getElementById("formContrato");
+            if (form.style.display === "block") {
+                form.style.display = "none";
+            }   else {
+                form.style.display = "block";}
+        }
+
+        function mostrarFormularioContr() {
+            var form = document.getElementById("formContr");
+            if (form.style.display === "block") {
+                form.style.display = "none";
+            }   else {
+                form.style.display = "block";}
+        }
+
+        function mostrarFormularioCon() {
+            var form = document.getElementById("formCon");
+            if (form.style.display === "block") {
+                form.style.display = "none";
+            }   else {
+                form.style.display = "block";}
+        }
+</script>
+
+
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-header bg-success text-center text-white">SUPPLIER</div>
+        <div class="card-body">
+            <button class="btn btn-success" onclick="mostrarFormularioSupplier()">Agregar Supplier</button>
+            <button class="btn btn-success" onclick="location.href='suppl.jsp?action=listSupplier'">Listar Supplier</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioSupp()">Eliminar Supplier</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioSup()">Modificar Supplier</button>
+
+            <!-- Form Supplier -->
+            <form id="formSupplier" style="display: none;" action="suppl.jsp" method="post">
+                <div class="form-group">
+                    <label for="CIF">CIF:</label>
+                    <input type="text" class="form-control" id="CIF_supp" name="CIF_supp" placeholder="Ingrese el CIF" required>
+                </div>
+                <div class="form-group">
+                    <label for="denomination">Denominación:</label>
+                    <input type="text" class="form-control" id="denomination" name="denomination" placeholder="Ingrese la denominación" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Dirección:</label>
+                    <input type="text" class="form-control" id="address" name="address" placeholder="Ingrese la dirección" required>
+                </div>
+                <div class="form-group">
+                    <label for="type">Tipo:</label>
+                    <input type="text" class="form-control" id="type" name="type" placeholder="Ingrese el tipo" required>
+                </div>
+
+                <input type="hidden" name="action" value="addSupplier">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+
+            <form action="suppl.jsp" method="post" id="formSupp" style="display: none;">
+                <input type="hidden" name="action" value="deleteSupplier">
+                <label for="CIF_supp">CIF:</label>
+                <input type="text" id="CIF_supp" name="CIF_supp" class="form-control" required>
+                <button type="submit" class="btn btn-danger mt-2">Borrar</button>
+            </form>
+
+            <form id="formSup" style="display: none;" action="suppl.jsp" method="post">
+                <div class="form-group">
+                    <label for="CIF">CIF:</label>
+                    <input type="text" class="form-control" id="CIF_supp" name="CIF_supp" placeholder="Ingrese el CIF" required>
+                </div>
+                <div class="form-group">
+                    <label for="denomination">Denominación:</label>
+                    <input type="text" class="form-control" id="denomination" name="denomination" placeholder="Ingrese la denominación" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Dirección:</label>
+                    <input type="text" class="form-control" id="address" name="address" placeholder="Ingrese la dirección" required>
+                </div>
+                <div class="form-group">
+                    <label for="type">Tipo:</label>
+                    <input type="text" class="form-control" id="type" name="type" placeholder="Ingrese el tipo" required>
+                </div>
+
+                <input type="hidden" name="action" value="modifySupplier">
+                <button type="submit" class="btn btn-warning">Modificar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script -->
+<script>
+    function mostrarFormularioSupplier() {
+        var form = document.getElementById("formSupplier");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+
+    function mostrarFormularioSupp() {
+        var form = document.getElementById("formSupp");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+
+    function mostrarFormularioSup() {
+        var form = document.getElementById("formSup");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+</script>
+
+
+
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-header bg-success text-center text-white">CLIENTE</div>
+        <div class="card-body">
+            <button class="btn btn-success" onclick="mostrarFormularioCliente()">Agregar Cliente</button>
+            <button class="btn btn-success" onclick="location.href='client.jsp?action=listCliente'">Listar Cliente</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioC()">Eliminar Cliente</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioCli()">Modificar Cliente</button>
+
+            <!-- Form Cliente -->
+            <form id="formCliente" style="display: none;" action="client.jsp" method="post">
+                <div class="form-group">
+                    <label for="CIF_cliente">CIF Cliente:</label>
+                    <input type="text" class="form-control" id="CIF_client" name="CIF_client" placeholder="Ingrese el CIF del cliente" required>
+                </div>
+                <div class="form-group">
+                    <label for="denomination">Denominación:</label>
+                    <input type="text" class="form-control" id="denomination" name="denomination" placeholder="Ingrese la denominación" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Dirección:</label>
+                    <input type="text" class="form-control" id="address" name="address" placeholder="Ingrese la dirección" required>
+                </div>
+                <div class="form-group">
+                    <label for="type">Tipo:</label>
+                    <input type="text" class="form-control" id="type" name="type" placeholder="Ingrese el tipo" required>
+                </div>
+
+                <input type="hidden" name="action" value="addCliente">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+
+            <form action="client.jsp" method="post" id="formC" style="display: none;">
+                <input type="hidden" name="action" value="deleteCliente">
+                <label for="CIF_client">CIF Cliente:</label>
+                <input type="text" id="CIF_client" name="CIF_client" class="form-control" required>
+                <button type="submit" class="btn btn-danger mt-2">Borrar</button>
+            </form>
+
+            <form id="formCli" style="display: none;" action="client.jsp" method="post">
+                <div class="form-group">
+                    <label for="CIF_cliente">CIF Cliente:</label>
+                    <input type="text" class="form-control" id="CIF_client" name="CIF_client" placeholder="Ingrese el CIF del cliente" required>
+                </div>
+                <div class="form-group">
+                    <label for="denomination">Denominación:</label>
+                    <input type="text" class="form-control" id="denomination" name="denomination" placeholder="Ingrese la denominación" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Dirección:</label>
+                    <input type="text" class="form-control" id="address" name="address" placeholder="Ingrese la dirección" required>
+                </div>
+                <div class="form-group">
+                    <label for="type">Tipo:</label>
+                    <input type="text" class="form-control" id="type" name="type" placeholder="Ingrese el tipo" required>
+                </div>
+
+                <input type="hidden" name="action" value="modifyCliente">
+                <button type="submit" class="btn btn-warning">Modificar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script -->
+<script>
+    function mostrarFormularioCliente() {
+        var form = document.getElementById("formCliente");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+
+    function mostrarFormularioC() {
+        var form = document.getElementById("formC");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+
+    function mostrarFormularioCli() {
+        var form = document.getElementById("formCli");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+</script>
+
+
+
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-header bg-success text-center text-white">MATERIAL</div>
+        <div class="card-body">
+            <button class="btn btn-success" onclick="mostrarFormularioMaterial()">Agregar Material</button>
+            <button class="btn btn-success" onclick="location.href='material.jsp?action=listMaterial'">Listar Material</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioMat()">Eliminar Material</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioMa()">Modificar Material</button>
+
+            <!-- Form Material -->
+            <form id="formMaterial" style="display: none;" action="material.jsp" method="post">
+                <div class="form-group">
+                    <label for="materialName">Nombre:</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Ingrese el nombre del material" required>
+                </div>
+                <div class="form-group">
+                    <label for="length">Longitud:</label>
+                    <input type="number" class="form-control" id="length" name="length" placeholder="Ingrese la longitud" required>
+                </div>
+                <div class="form-group">
+                    <label for="height">Altura:</label>
+                    <input type="number" class="form-control" id="height" name="height" placeholder="Ingrese la altura" required>
+                </div>
+                <div class="form-group">
+                    <label for="width">Ancho:</label>
+                    <input type="number" class="form-control" id="width" name="width" placeholder="Ingrese el ancho" required>
+                </div>
+                <div class="form-group">
+                    <label for="weight">Peso:</label>
+                    <input type="number" class="form-control" id="weight" name="weight" placeholder="Ingrese el peso" required>
+                </div>
+
+                <input type="hidden" name="action" value="addMaterial">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+
+            <form action="material.jsp" method="post" id="formMat" style="display: none;">
+                <input type="hidden" name="action" value="deleteMaterial">
+                <label for="material_id">ID de Material:</label>
+                <input type="number" id="material_id" name="material_id" class="form-control" required>
+                <button type="submit" class="btn btn-danger mt-2">Borrar</button>
+            </form>
+
+            <form id="formMa" style="display: none;" action="material.jsp" method="post">
+                <div class="form-group">
+                    <label for="material_id">ID de Material:</label>
+                    <input type="number" class="form-control" id="material_id" name="material_id" placeholder="Ingrese el ID del material" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">Nombre:</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Ingrese el nombre del material" required>
+                </div>
+                <div class="form-group">
+                    <label for="length">Longitud:</label>
+                    <input type="number" class="form-control" id="length" name="length" placeholder="Ingrese la longitud" required>
+                </div>
+                <div class="form-group">
+                    <label for="height">Altura:</label>
+                    <input type="number" class="form-control" id="height" name="height" placeholder="Ingrese la altura" required>
+                </div>
+                <div class="form-group">
+                    <label for="width">Ancho:</label>
+                    <input type="number" class="form-control" id="width" name="width" placeholder="Ingrese el ancho" required>
+                </div>
+                <div class="form-group">
+                    <label for="weight">Peso:</label>
+                    <input type="number" class="form-control" id="weight" name="weight" placeholder="Ingrese el peso" required>
+                </div>
+
+                <input type="hidden" name="action" value="modifyMaterial">
+                <button type="submit" class="btn btn-warning">Modificar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script -->
+<script>
+    function mostrarFormularioMaterial() {
+        var form = document.getElementById("formMaterial");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+    }
+}
+
+    function mostrarFormularioMat() {
+        var form = document.getElementById("formMat");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+
+    function mostrarFormularioMa() {
+        var form = document.getElementById("formMa");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+</script>
+>
+
+<div class="col-md-5">
+    <div class="card">
+        <div class="card-header bg-success text-center text-white">PURCHASE</div>
+        <div class="card-body">
+            <button class="btn btn-success" onclick="mostrarFormularioCompra()">Agregar Purchase</button>
+            <button class="btn btn-success" onclick="location.href='purch.jsp?action=listPurchase'">Listar Purchase</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioComp()">Eliminar Purchase</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioPurr()">Modificar Purchase</button>
+
+            <!-- Form Compra -->
+            <form id="formCompra" style="display: none;" action="purch.jsp" method="post">
+                <div class="form-group">
+                    <label for="price">Precio:</label>
+                    <input type="number" class="form-control" id="price" name="price" placeholder="Ingrese el precio" required>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Cantidad:</label>
+                    <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Ingrese la cantidad" required>
+                </div>
+                <div class="form-group">
+                    <label for="material_id">ID del Material:</label>
+                    <input type="number" class="form-control" id="material_id" name="material_id" placeholder="Ingrese el ID del material" required>
+                </div>
+                <div class="form-group">
+                    <label for="CIF_supp">CIF Supplier:</label>
+                    <input type="text" class="form-control" id="CIF_supp" name="CIF_supp" placeholder="Ingrese el CIF del proveedor" required>
+                </div>
+
+                <input type="hidden" name="action" value="addPurchase">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+
+            <form action="purch.jsp" method="post" id="formComp" style="display: none;">
+                <input type="hidden" name="action" value="deletePurchase">
+                <label for="purchase_id">ID Purchase:</label>
+                <input type="number" id="purchase_id" name="purchase_id" class="form-control" required>
+                <button type="submit" class="btn btn-danger mt-2">Borrar</button>
+            </form>
+
+            <form id="formP" style="display: none;" action="purch.jsp" method="post">
+                <div class="form-group">
+                    <label for="purchase_id">ID Purchase:</label>
+                    <input type="number" class="form-control" id="purchase_id" name="purchase_id" placeholder="Ingrese el ID de compra" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Precio:</label>
+                    <input type="number" class="form-control" id="price" name="price" placeholder="Ingrese el precio" required>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Cantidad:</label>
+                    <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Ingrese la cantidad" required>
+                </div>
+                <div class="form-group">
+                    <label for="material_id">ID del Material:</label>
+                    <input type="number" class="form-control" id="material_id" name="material_id" placeholder="Ingrese el ID del material" required>
+                </div>
+                <div class="form-group">
+                    <label for="CIF_supp">CIF Supplier:</label>
+                    <input type="text" class="form-control" id="CIF_supp" name="CIF_supp" placeholder="Ingrese el CIF del proveedor" required>
+                </div>
+
+                <input type="hidden" name="action" value="modifyPurchase">
+                <button type="submit" class="btn btn-warning">Modificar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script -->
+<script>
+    function mostrarFormularioCompra() {
+        var form = document.getElementById("formCompra");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+
+    function mostrarFormularioComp() {
+        var form = document.getElementById("formComp");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+
+    function mostrarFormularioPurr() {
+        var form = document.getElementById("formP");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+</script>
+
+
+</script>
+
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-header bg-success text-center text-white">GASTO</div>
+        <div class="card-body">
+            <button class="btn btn-success" onclick="mostrarFormularioGasto()">Agregar Gasto</button>
+            <button class="btn btn-success" onclick="location.href='gasto.jsp?action=listGasto'">Listar Gasto</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioGast()">Eliminar Gasto</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioGas()">Modificar Gasto</button>
+
+            <!-- Form Gasto -->
+            <form id="formGasto" style="display: none;" action="gasto.jsp" method="post">
+
+                <div class="form-group">
+                    <label for="cantidad">Cantidad:</label>
+                    <input type="number" class="form-control" id="cantidad" name="cantidad" placeholder="Ingrese la cantidad" required>
+                </div>
+                <div class="form-group">
+                    <label for="fechaInicio">Fecha:</label>
+                    <input type="text" class="form-control" id="fecha" name="fecha" placeholder="Ingrese la fecha (DD-MM-YYYY)" required>
+                </div>
+                <div class="form-group">
+                    <label for="categoria">Categoría:</label>
+                    <input type="text" class="form-control" id="categoria" name="categoria" placeholder="Ingrese la categoría" required>
+                </div>
+                <div class="form-group">
+                    <label for="purchase_id">Purchase ID:</label>
+                    <input type="number" class="form-control" id="purchase_id" name="purchase_id" placeholder="Ingrese el Purchase ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="n_contrato">Número de Contrato:</label>
+                    <input type="number" class="form-control" id="n_contrato" name="n_contrato" placeholder="Ingrese el número de contrato">
+                </div>
+
+                <input type="hidden" name="action" value="addGasto">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+
+            <form action="gasto.jsp" method="post" id="formGast" style="display: none;">
+                <input type="hidden" name="action" value="deleteGasto">
+                <label for="id_gasto">ID</label>
+                <input type="text" id="id_gasto" name="id_gasto" class="form-control" required>
+                <button type="submit" class="btn btn-danger mt-2">Borrar</button>
+            </form>
+
+            <form id="formGas" style="display: none;" action="gasto.jsp" method="post">
+
+                <div class="form-group">
+                    <label for="id_gasto">ID:</label>
+                    <input type="text" class="form-control" id="id_gasto" name="id_gasto" placeholder="Ingrese el ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="cantidad">Cantidad:</label>
+                    <input type="number" class="form-control" id="cantidad" name="cantidad" placeholder="Ingrese la cantidad" required>
+                </div>
+                <div class="form-group">
+                    <label for="fecha">Fecha:</label>
+                    <input type="text" class="form-control" id="fecha" name="fecha" placeholder="Ingrese la fecha (DD-MM-YYYY)" required>
+                </div>
+                <div class="form-group">
+                    <label for="categoria">Categoría:</label>
+                    <input type="text" class="form-control" id="categoria" name="categoria" placeholder="Ingrese la categoría" required>
+                </div>
+                <div class="form-group">
+                    <label for="purchase_id">Purchase ID:</label>
+                    <input type="number" class="form-control" id="purchase_id" name="purchase_id" placeholder="Ingrese el Purchase ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="n_contrato">Número de Contrato:</label>
+                    <input type="number" class="form-control" id="n_contrato" name="n_contrato" placeholder="Ingrese el número de contrato">
+                </div>
+
+                <input type="hidden" name="action" value="modifyGasto">
+                <button type="submit" class="btn btn-warning">Modificar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function mostrarFormularioGasto() {
+        var form = document.getElementById("formGasto");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+
+    function mostrarFormularioGast() {
+        var form = document.getElementById("formGast");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+
+    function mostrarFormularioGas() {
+        var form = document.getElementById("formGas");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+</script>
+
+
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-header bg-success text-center text-white">CAR</div>
+        <div class="card-body">
+            <button class="btn btn-success" onclick="mostrarFormularioCoche()">Agregar Car</button>
+            <button class="btn btn-success" onclick="location.href='car.jsp?action=listCars'">Listar Car</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioCoch()">Eliminar Car</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioCo()">Modificar Car</button>
+            <!-- Form Coche -->
+            <form id="formCoche" style="display: none;" action="car.jsp" method="post">
+                <div class="form-group">
+                    <label for="serial_n">Número de Serie:</label>
+                    <input type="text" class="form-control" id="serial_n" name="serial_n" placeholder="Ingrese el número de serie" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">Nombre:</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Ingrese el nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="power">Potencia:</label>
+                    <input type="number" class="form-control" id="power" name="power" placeholder="Ingrese la potencia" required>
+                </div>
+                <div class="form-group">
+                    <label for="engine_disp">Desplazamiento del Motor:</label>
+                    <input type="number" class="form-control" id="engine_disp" name="engine_disp" placeholder="Ingrese el desplazamiento del motor" required>
+                </div>
+                <input type="hidden" name="action" value="addCar">
+                <button type="submit" class="btn btn-primary" >Enviar</button>
+            </form>
+
+            <form action="car.jsp" method="post" id="formCoch" style="display: none;">
+                <input type="hidden" name="action" value="deleteCar">
+                <label for="nombre">serial_n:</label>
+                <input type="text" id="serial_n" name="serial_n" class="form-control" required>
+                <button type="submit" class="btn btn-danger mt-2">Borrar</button>
+            </form>
+
+            <form id="formCo" style="display: none;" action="car.jsp" method="post">
+                <div class="form-group">
+                    <label for="serial_n">Número de Serie:</label>
+                    <input type="text" class="form-control" id="serial_n" name="serial_n" placeholder="Ingrese el número de serie" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">Nombre:</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Ingrese el nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="power">Potencia:</label>
+                    <input type="number" class="form-control" id="power" name="power" placeholder="Ingrese la potencia" required>
+                </div>
+                <div class="form-group">
+                    <label for="engine_disp">Desplazamiento del Motor:</label>
+                    <input type="number" class="form-control" id="engine_disp" name="engine_disp" placeholder="Ingrese el desplazamiento del motor" required>
+                </div>
+                <input type="hidden" name="action" value="editCar">
+                <button type="submit" class="btn btn-warning" >Enviar</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function mostrarFormularioCoche() {
+        var formCliente = document.getElementById("formCoche");
+            if (formCliente.style.display === "block") {
+                formCliente.style.display = "none";
+            }   else {
+                formCliente.style.display = "block";}
+        }
+    function mostrarFormularioCoch() {
+        var formCliente = document.getElementById("formCoch");
+            if (formCliente.style.display === "block") {
+                formCliente.style.display = "none";
+            }   else {
+                formCliente.style.display = "block";}
+        }
+    function mostrarFormularioCo() {
+        var form = document.getElementById("formCo");
+            if (form.style.display === "block") {
+                form.style.display = "none";
+            }   else {
+                form.style.display = "block";}
+        }
+</script>
+
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-header bg-success text-center text-white">CAR MATERIAL</div>
+        <div class="card-body">
+            <button class="btn btn-success" onclick="mostrarFormularioAsociacion()">Insertar CarMaterial</button>
+            <button class="btn btn-success" onclick="location.href='carmats.jsp?action=listCarMaterials'">Listar CarMaterial</button>
+            <!-- Form Associación Material-Coche -->
+            <form id="formAsociacion" style="display: none;" action="carmats.jsp" method="post">
+                <div class="form-group">
+                    <label for="serial_n">Número de Serie del Coche:</label>
+                    <input type="text" class="form-control" id="serial_n" name="serial_n" placeholder="Ingrese el número de serie del coche" required>
+                </div>
+                <div class="form-group">
+                    <label for="material_id">ID del Material:</label>
+                    <input type="number" class="form-control" id="material_id" name="material_id" placeholder="Ingrese el ID del material" required>
+                </div>
+                <input type="hidden" name="action" value="addCarMaterial">
+                <button type="submit" class="btn btn-primary" >Enviar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function mostrarFormularioAsociacion() {
+        var form = document.getElementById("formAsociacion");
+        if (form.style.display === "block") {
+                form.style.display = "none";
+            }   else {
+                form.style.display = "block";}
+
+    }
+
+</script>
+
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-header bg-success text-center text-white">ORDER</div>
+        <div class="card-body">
+            <button class="btn btn-success" onclick="mostrarFormularioOrden()">Insertar Order</button>
+            <button class="btn btn-success" onclick="location.href='order.jsp?action=listOrder'">Listar Order</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioOrd()">Eliminar Order</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioOr()">Modificar Order</button>
+
+            <!-- Form Inserire Ordine -->
+            <form id="formOrden" style="display: none;" action="order.jsp" method="post">
+                <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="number" class="form-control" id="price" name="price" placeholder="Insert Price" required>
+                </div>
+                <div class="form-group">
+                    <label for="serial_n">Numero Serie del Coche:</label>
+                    <input type="text" class="form-control" id="serial_n" name="serial_n" placeholder="Insert numero serie" required>
+                </div>
+                <div class="form-group">
+                    <label for="CIF_client">CIF Cliente:</label>
+                    <input type="text" class="form-control" id="CIF_client" name="CIF_client" placeholder="Insert CIF" required>
+                </div>
+
+                <input type="hidden" name="action" value="addOrder">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+
+            <form action="order.jsp" method="post" id="formOrd" style="display: none;">
+                <input type="hidden" name="action" value="deleteOrder">
+                <label for="order_id">Order ID:</label>
+                <input type="number" id="order_id" name="order_id" class="form-control" required>
+                <button type="submit" class="btn btn-danger mt-2">Borrar</button>
+            </form>
+
+            <form id="formOr" style="display: none;" action="order.jsp" method="post">
+                <div class="form-group">
+                    <label for="order_id">Order ID:</label>
+                    <input type="number" class="form-control" id="order_id" name="order_id" placeholder="Ingrese el Order ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price:</label>
+                    <input type="number" class="form-control" id="price" name="price" placeholder="Insert Price" required>
+                </div>
+                <div class="form-group">
+                    <label for="serial_n">Numero Serie del Coche:</label>
+                    <input type="text" class="form-control" id="serial_n" name="serial_n" placeholder="Insert numero serie" required>
+                </div>
+                <div class="form-group">
+                    <label for="CIF_client">CIF Cliente:</label>
+                    <input type="text" class="form-control" id="CIF_client" name="CIF_client" placeholder="Insert CIF" required>
+                </div>
+
+                <input type="hidden" name="action" value="modifyOrder">
+                <button type="submit" class="btn btn-warning">Modificar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script -->
+<script>
+    function mostrarFormularioOrden() {
+        var form = document.getElementById("formOrden");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+    }
+}
+
+    function mostrarFormularioOrd() {
+        var form = document.getElementById("formOrd");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+
+    function mostrarFormularioOr() {
+        var form = document.getElementById("formOr");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+</script>
+
+<!--
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-header bg-success text-center text-white">INGRESO</div>
+        <div class="card-body">
+            <button class="btn btn-success" onclick="mostrarFormularioIngreso()">Agregar Ingreso</button>
+            <button class="btn btn-success" onclick="location.href='ingreso.jsp?action=listIngreso'">Listar Ingreso</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioIng()">Eliminar Ingreso</button>
+            <button class="btn btn-success mt-2" onclick="mostrarFormularioIn()">Modificar Ingreso</button>
+
+            
+            <form id="formIngreso" style="display: none;" action="ingreso.jsp" method="post">
+
+                <div class="form-group">
+                    <label for="cantidad">Cantidad:</label>
+                    <input type="number" class="form-control" id="cantidad" name="cantidad" placeholder="Ingrese la cantidad" required>
+                </div>
+                <div class="form-group">
+                    <label for="fechaInicio">Fecha:</label>
+                    <input type="text" class="form-control" id="fecha" name="fecha" placeholder="Ingrese la fecha (DD-MM-YYYY)" required>
+                </div>
+                <div class="form-group">
+                    <label for="categoria">Categoría:</label>
+                    <input type="text" class="form-control" id="categoria" name="categoria" placeholder="Ingrese la categoría" required>
+                </div>
+                <div class="form-group">
+                    <label for="order_id">Order ID:</label>
+                    <input type="number" class="form-control" id="order_id" name="order_id" placeholder="Ingrese el Order ID" required>
+                </div>
+
+                <input type="hidden" name="action" value="addIngreso">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+
+            <form action="ingreso.jsp" method="post" id="formIng" style="display: none;">
+                <input type="hidden" name="action" value="deleteIngreso">
+                <label for="id_ingreso">ID</label>
+                <input type="text" id="id_ingreso" name="id_ingreso" class="form-control" required>
+                <button type="submit" class="btn btn-danger mt-2">Borrar</button>
+            </form>
+
+            <form id="formIn" style="display: none;" action="ingreso.jsp" method="post">
+
+                <div class="form-group">
+                    <label for="id_ingreso">ID:</label>
+                    <input type="number" class="form-control" id="id_ingreso" name="id_ingreso" placeholder="Ingrese el ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="cantidad">Cantidad:</label>
+                    <input type="number" class="form-control" id="cantidad" name="cantidad" placeholder="Ingrese la cantidad" required>
+                </div>
+                <div class="form-group">
+                    <label for="fecha">Fecha:</label>
+                    <input type="text" class="form-control" id="fecha" name="fecha" placeholder="Ingrese la fecha (DD-MM-YYYY)" required>
+                </div>
+                <div class="form-group">
+                    <label for="categoria">Categoría:</label>
+                    <input type="text" class="form-control" id="categoria" name="categoria" placeholder="Ingrese la categoría" required>
+                </div>
+                <div class="form-group">
+                    <label for="order_id">Order ID:</label>
+                    <input type="number" class="form-control" id="order_id" name="order_id" placeholder="Ingrese el Order ID" required>
+                </div>
+
+                <input type="hidden" name="action" value="modifyIngreso">
+                <button type="submit" class="btn btn-warning">Modificar</button>
+            </form>
+        </div>
+    </div>
+</div>
+-->
+
+<script>
+    function mostrarFormularioIngreso() {
+        var form = document.getElementById("formIngreso");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+
+    function mostrarFormularioIng() {
+        var form = document.getElementById("formIng");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+
+    function mostrarFormularioIn() {
+        var form = document.getElementById("formIn");
+        if (form.style.display === "block") {
+            form.style.display = "none";
+        } else {
+            form.style.display = "block";
+        }
+    }
+</script>
+
+
+
+</body>
+</html>
+
+
